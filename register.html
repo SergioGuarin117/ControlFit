@@ -270,72 +270,44 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <h1>💪 ControlFit</h1>
-            <p>Sistema de Gestión para Gimnasios</p>
-        </div>
-
-        <form id="registerForm">
-            <div class="form-group">
-                <label for="fullname">Nombre Completo</label>
-                <input type="text" id="fullname" name="fullname" placeholder="Ingresa tu nombre completo" required>
-                <div class="error" id="fullnameError">Por favor ingresa tu nombre completo</div>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required>
-                <div class="error" id="emailError">Por favor ingresa un correo válido</div>
-            </div>
-
-            <div class="form-group">
-                <label for="username">Usuario</label>
-                <input type="text" id="username" name="username" placeholder="Elige un nombre de usuario" required>
-                <div class="error" id="usernameError">El usuario debe tener al menos 4 caracteres</div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <div class="password-container">
-                    <input type="password" id="password" name="password" placeholder="Crea una contraseña segura" required>
-                    <button type="button" class="toggle-password" id="togglePassword">Mostrar</button>
-                </div>
-                <div class="password-strength">
-                    <div class="strength-bar">
-                        <div class="strength-bar-fill" id="strengthBar"></div>
-                    </div>
-                    <span id="strengthText"></span>
-                </div>
-                <div class="error" id="passwordError">La contraseña debe tener al menos 6 caracteres</div>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirmar Contraseña</label>
-                <div class="password-container">
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repite tu contraseña" required>
-                    <button type="button" class="toggle-password" id="toggleConfirmPassword">Mostrar</button>
-                </div>
-                <div class="error" id="confirmPasswordError">Las contraseñas no coinciden</div>
-            </div>
-
-            <button type="submit" class="btn">Registrarse</button>
-        </form>
-
-        <div class="success-message" id="successMessage">
-            ✅ ¡Registro exitoso! Tu cuenta ha sido creada.
-        </div>
-
-        <div class="login-link">
-            ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
-        </div>
-
-        <div class="users-list" id="usersList" style="display: none;">
-            <h3>👥 Usuarios Registrados</h3>
-            <div id="usersContainer"></div>
-        </div>
+  <div class="container">
+    <div class="logo">
+      <h1>💪 ControlFit</h1>
+      <p>Sistema de Gestión para Gimnasios</p>
     </div>
 
-    <script src="registro.js"></script>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="fullname">Nombre completo</label>
+        <input type="text" id="fullname" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" required />
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar contraseña</label>
+        <input type="password" id="confirmPassword" required />
+      </div>
+
+      <button type="submit" class="btn">Registrarse</button>
+    </form>
+
+    <div id="message" class="success-message"></div>
+
+    <p class="login-link">¿Ya tienes cuenta? <a href="index.html">Inicia sesión</a></p>
+  </div>
 </body>
 </html>
