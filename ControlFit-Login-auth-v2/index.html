@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ControlFit - Iniciar Sesión</title>
-    
     <style>
         * {
             margin: 0;
@@ -263,7 +262,6 @@
     </style>
 </head>
 <body>
-
   <div class="container">
     <div class="logo">
       <h1>💪 ControlFit</h1>
@@ -282,22 +280,11 @@
         <input type="password" id="password" required>
       </div>
 
-      <button type="submit" class="btn" href="healthData.html">Iniciar sesión</button>
+      <button type="submit" class="btn" href="profile.html">Iniciar sesión</button>
     </form>
 
     <p id="message"></p>
     <p class="login-link">¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
   </div>
-  <script type="module">
-        import { initDB } from '/JS/BD.js';
-  
-        // Inicializar BD al cargar la aplicación
-        initDB().then(db => {
-            console.log('✅ Aplicación lista, BD inicializada');
-        }).catch(error => {
-            console.error('❌ Error al inicializar BD:', error);
-        });
-    </script>
-    <script type="module" src="/JS/Login.js"></script>
 </body>
 </html>
