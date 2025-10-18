@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ControlFit - Registro</title>
+    <title>ControlFit - Iniciar Sesión</title>
     <style>
         * {
             margin: 0;
@@ -71,7 +71,8 @@
             font-size: 14px;
         }
 
-        input {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
@@ -114,57 +115,23 @@
             color: #764ba2;
         }
 
-        .password-strength {
-            margin-top: 8px;
-            font-size: 12px;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .strength-bar {
-            height: 5px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            margin-top: 5px;
-            overflow: hidden;
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
         }
 
-        .strength-bar-fill {
-            height: 100%;
-            width: 0%;
-            transition: all 0.3s;
-            border-radius: 10px;
-        }
-
-        .strength-weak { 
-            background: linear-gradient(90deg, #ff4757, #ff6b81);
-            width: 33%; 
-        }
-        
-        .strength-medium { 
-            background: linear-gradient(90deg, #ffa502, #ffb733);
-            width: 66%; 
-        }
-        
-        .strength-strong { 
-            background: linear-gradient(90deg, #26de81, #20bf6b);
-            width: 100%; 
-        }
-
-        .error {
-            color: #ff4757;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-            animation: shake 0.3s;
-        }
-
-        .error.show {
-            display: block;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .btn {
@@ -190,12 +157,28 @@
             transform: translateY(0);
         }
 
+        .error-message {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+            animation: shake 0.3s;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
         .success-message {
             background: linear-gradient(135deg, #26de81, #20bf6b);
             color: white;
             padding: 15px;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-bottom: 20px;
             display: none;
             text-align: center;
             font-weight: 600;
@@ -204,6 +187,58 @@
 
         .success-message.show {
             display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .register-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
         }
 
         .login-link {
@@ -224,91 +259,32 @@
             color: #764ba2;
             text-decoration: underline;
         }
-
-        .users-list {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid #f0f0f0;
-        }
-
-        .users-list h3 {
-            color: #333;
-            font-size: 16px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .user-item {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            font-size: 13px;
-            color: #555;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s;
-        }
-
-        .user-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-item strong {
-            color: #667eea;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-            }
-
-            .logo h1 {
-                font-size: 28px;
-            }
-        }
     </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">
       <h1>💪 ControlFit</h1>
+      <p>Inicio de sesión</p>
       <p>Sistema de Gestión para Gimnasios</p>
     </div>
 
-    <form id="registerForm">
-      <div class="form-group">
-        <label for="fullname">Nombre completo</label>
-        <input type="text" id="fullname" required />
-      </div>
-
-      <div class="form-group">
-        <label for="email">Correo electrónico</label>
-        <input type="email" id="email" required />
-      </div>
-
+    <form id="loginForm">
       <div class="form-group">
         <label for="username">Usuario</label>
-        <input type="text" id="username" required />
+        <input type="text" id="username" required>
       </div>
 
       <div class="form-group">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" required />
+        <input type="password" id="password" required>
       </div>
 
-      <div class="form-group">
-        <label for="confirmPassword">Confirmar contraseña</label>
-        <input type="password" id="confirmPassword" required />
-      </div>
-
-      <button type="submit" class="btn">Registrarse</button>
+      <button type="submit" class="btn" href="profile.html">Iniciar sesión</button>
     </form>
 
-    <div id="message" class="success-message"></div>
-
-    <p class="login-link">¿Ya tienes cuenta? <a href="index.html">Inicia sesión</a></p>
+    <p id="message"></p>
+    <p class="login-link">¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
   </div>
-  <script type="module" src="/JS/register.js"></script>
 </body>
 </html>

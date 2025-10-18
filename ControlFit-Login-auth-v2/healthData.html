@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlFit - Datos de Salud</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-item label {
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>💪 ControlFit</h1>
+            <p>Registro de Datos de Salud</p>
+        </div>
+
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <form id="healthForm">
+
+
+            <!-- Medidas Físicas -->
+            <div class="form-section">
+                <div class="section-title">Medidas Físicas</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="height">Altura (cm)</label>
+                        <input type="number" id="height" name="height" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Peso (kg)</label>
+                        <input type="number" id="weight" name="weight" step="0.1" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="chest">Pecho (cm)</label>
+                        <input type="number" id="chest" name="chest" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="waist">Cintura (cm)</label>
+                        <input type="number" id="waist" name="waist" step="0.1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hip">Cadera (cm)</label>
+                        <input type="number" id="hip" name="hip" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="arm">Brazo (cm)</label>
+                        <input type="number" id="arm" name="arm" step="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de Salud -->
+            <div class="form-section">
+                <div class="section-title">Información de Salud</div>
+                
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="bloodType">Tipo de Sangre</label>
+                        <select id="bloodType" name="bloodType">
+                            <option value="">Seleccionar</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bloodPressure">Presión Arterial (mmHg)</label>
+                        <input type="text" id="bloodPressure" name="bloodPressure" placeholder="120/80">
+                    </div>
+                    <div class="form-group">
+                        <label for="heartRate">Frecuencia Cardíaca (bpm)</label>
+                        <input type="number" id="heartRate" name="heartRate" step="1">
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Condiciones Médicas</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="diabetes" name="conditions" value="diabetes">
+                                <label for="diabetes">Diabetes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hypertension" name="conditions" value="hypertension">
+                                <label for="hypertension">Hipertensión</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="asthma" name="conditions" value="asthma">
+                                <label for="asthma">Asma</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="injury" name="conditions" value="injury">
+                                <label for="injury">Lesiones Previas</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="arthritis" name="conditions" value="arthritis">
+                                <label for="arthritis">Artritis</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Botones -->
+            <div class="btn-container">
+                <button type="reset" class="btn btn-reset">Limpiar</button>
+                <button type="submit" class="btn btn-submit">Guardar Datos</button>
+            </div>
+        </form>
+
+
+    </div>
+
+    <script>
+        const form = document.getElementById('healthForm');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validaciones básicas
+            const fullName = document.getElementById('fullName').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+
+            if (!fullName || !height || !weight) {
+                showError('Por favor completa todos los campos requeridos');
+                return;
+            }
+
+            if (height <= 0 || weight <= 0) {
+                showError('La altura y peso deben ser mayores a 0');
+                return;
+            }
+
+            // Aquí iría la lógica para guardar los datos
+            showSuccess('¡Datos de salud guardados exitosamente!');
+            
+            // Opcional: limpiar el formulario después de 2 segundos
+            setTimeout(() => {
+                form.reset();
+                successMessage.classList.remove('show');
+            }, 2000);
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            successMessage.classList.remove('show');
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 4000);
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.classList.add('show');
+            errorMessage.classList.remove('show');
+        }
+    </script>
+</body>
+</html>
