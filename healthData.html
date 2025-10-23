@@ -260,10 +260,12 @@
 <body>
     <div class="container">
         <div class="logo">
-            <h1>💪 ControlFit</h1>
+            <h1>ControlFit</h1>
             <p>Registro de Datos de Salud</p>
         </div>
+        
 
+        <div id="message"></div>
         <div id="successMessage" class="success-message"></div>
         <div id="errorMessage" class="error-message"></div>
 
@@ -276,46 +278,24 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="height">Altura (cm)</label>
-                        <input type="number" id="height" name="height" step="0.1" required>
+                        <label for="altura">Altura (cm)</label>
+                        <input type="number" id="altura" name="height" step="0.1" required>
                     </div>
                     <div class="form-group">
-                        <label for="weight">Peso (kg)</label>
-                        <input type="number" id="weight" name="weight" step="0.1" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="chest">Pecho (cm)</label>
-                        <input type="number" id="chest" name="chest" step="0.1">
-                    </div>
-                    <div class="form-group">
-                        <label for="waist">Cintura (cm)</label>
-                        <input type="number" id="waist" name="waist" step="0.1">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" id="peso" name="weight" step="0.1" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="hip">Cadera (cm)</label>
-                        <input type="number" id="hip" name="hip" step="0.1">
+                        <label for="edad">Edad</label>
+                        <input type="number" id="edad" name="chest" step="0.1" required>
                     </div>
+                    <div class="form-row full">
                     <div class="form-group">
-                        <label for="arm">Brazo (cm)</label>
-                        <input type="number" id="arm" name="arm" step="0.1">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Información de Salud -->
-            <div class="form-section">
-                <div class="section-title">Información de Salud</div>
-                
-                <div class="form-row full">
-                    <div class="form-group">
-                        <label for="bloodType">Tipo de Sangre</label>
-                        <select id="bloodType" name="bloodType">
+                        <label for="tipoSangre">Tipo de Sangre</label>
+                        <select id="tipoSangre" name="bloodType">
                             <option value="">Seleccionar</option>
                             <option value="O+">O+</option>
                             <option value="O-">O-</option>
@@ -328,49 +308,43 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="form-row">
+            <div class="form-section">
+                <div class="section-title">Medidas Corporales</div>
+                
+                <div class="form-row full">
                     <div class="form-group">
-                        <label for="bloodPressure">Presión Arterial (mmHg)</label>
-                        <input type="text" id="bloodPressure" name="bloodPressure" placeholder="120/80">
+                        <label for="pecho">Pecho (cm)</label>
+                        <input type="number" id="pecho" name="height" step="0.1"required>
                     </div>
-                    <div class="form-group">
-                        <label for="heartRate">Frecuencia Cardíaca (bpm)</label>
-                        <input type="number" id="heartRate" name="heartRate" step="1">
+                    <div class="form-group full">
+                        <label for="cintura">Cintura (cm)</label>
+                        <input type="number" id="cintura" name="weight" step="0.1"required>
                     </div>
                 </div>
 
                 <div class="form-row full">
                     <div class="form-group">
-                        <label>Condiciones Médicas</label>
-                        <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="diabetes" name="conditions" value="diabetes">
-                                <label for="diabetes">Diabetes</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="hypertension" name="conditions" value="hypertension">
-                                <label for="hypertension">Hipertensión</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="asthma" name="conditions" value="asthma">
-                                <label for="asthma">Asma</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="injury" name="conditions" value="injury">
-                                <label for="injury">Lesiones Previas</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="arthritis" name="conditions" value="arthritis">
-                                <label for="arthritis">Artritis</label>
-                            </div>
-                        </div>
+                        <label for="cadera">Cadera (cm)</label>
+                        <input type="number" id="cadera" name="chest" step="0.1"required>
+                    </div>
+                    <div class="form-group">
+                        <label for="brazo">Brazo (cm)</label>
+                        <input type="number" id="brazo" name="brazo" step="0.1"required>
                     </div>
                 </div>
-            </div>
-
-
-
+            <div class="form-section">
+                <div class="section-title">Datos de Frecuencia Cardíaca</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="presionArterial">Presión Arterial (mmHg)</label>
+                        <input type="text" id="presionArterial" name="bloodPressure" placeholder="120/80" step="0,1"required>
+                    </div>
+                    <div class="form-group">
+                    <label for="frecuenciaCardiaca">Frecuencia Cardíaca (bpm)</label>
+                        <input type="number" id="frecuenciaCardiaca" name="heartRate" step="0,1"required>
+                    </div>
+                </div>    
             <!-- Botones -->
             <div class="btn-container">
                 <button type="reset" class="btn btn-reset">Limpiar</button>
@@ -381,53 +355,6 @@
 
     </div>
 
-    <script>
-        const form = document.getElementById('healthForm');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Validaciones básicas
-            const fullName = document.getElementById('fullName').value;
-            const height = document.getElementById('height').value;
-            const weight = document.getElementById('weight').value;
-
-            if (!fullName || !height || !weight) {
-                showError('Por favor completa todos los campos requeridos');
-                return;
-            }
-
-            if (height <= 0 || weight <= 0) {
-                showError('La altura y peso deben ser mayores a 0');
-                return;
-            }
-
-            // Aquí iría la lógica para guardar los datos
-            showSuccess('¡Datos de salud guardados exitosamente!');
-            
-            // Opcional: limpiar el formulario después de 2 segundos
-            setTimeout(() => {
-                form.reset();
-                successMessage.classList.remove('show');
-            }, 2000);
-        });
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.add('show');
-            successMessage.classList.remove('show');
-            setTimeout(() => {
-                errorMessage.classList.remove('show');
-            }, 4000);
-        }
-
-        function showSuccess(message) {
-            successMessage.textContent = message;
-            successMessage.classList.add('show');
-            errorMessage.classList.remove('show');
-        }
-    </script>
+    <script type="module" src="/JS/healthData.js"></script>
 </body>
 </html>
