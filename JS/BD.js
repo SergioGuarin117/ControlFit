@@ -3,31 +3,31 @@ let db;
 // Función para inicializar la base de datos
 export function initDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("controlFit", 1);
+    const request = indexedDB.open("controlFit", 5); // Incrementar versión para actualizar esquema
 
     request.onsuccess = (event) => {
       db = event.target.result;
-      console.log("✅ Base de datos abierta correctamente:", db.name);
+      console.log("Base de datos abierta correctamente:", db.name);
       resolve(db);
     };
 
     request.onerror = (event) => {
-      console.error("❌ Error al abrir la base de datos:", event.target.error);
+      console.error("Error al abrir la base de datos:", event.target.error);
       reject(event.target.error);
     };
 
     request.onupgradeneeded = (event) => {
-      console.log("🔄 Creando/actualizando estructura de la base de datos...");
+      console.log("Creando/actualizando estructura de la base de datos...");
       const db = event.target.result;
-      crearTablas(db);
+      crearTablas(db, event.oldVersion);
     };
   });
 }
 
-function crearTablas(db) {
+function crearTablas(db, oldVersion) {
   // USUARIO
   if (!db.objectStoreNames.contains("Usuario")) {
-    console.log("📝 Creando tabla Usuario...");
+    console.log("Creando tabla Usuario...");
     const usuario = db.createObjectStore("Usuario", {
       keyPath: "id_usuario",
       autoIncrement: true,
@@ -40,20 +40,25 @@ function crearTablas(db) {
     usuario.createIndex("edad", "edad", { unique: false });
     usuario.createIndex("peso", "peso", { unique: false });
     usuario.createIndex("altura", "altura", { unique: false });
-    usuario.createIndex("tipoSangre" , "tipoSangre", {unique: false});
-    usuario.createIndex("pecho" , "pecho", {unique: false});
-    usuario.createIndex("cintura" , "cintura", {unique: false});
-    usuario.createIndex("cadera" , "cadera", {unique: false});
-    usuario.createIndex("brazo" , "brazo", {unique: false});
-    usuario.createIndex("presionArterial" , "presionArterial", {unique: false});
-    usuario.createIndex("frecuenciaCardiaca" , "frecuenciaCardiaca", {unique: false});
-
-    
+    usuario.createIndex("tipoSangre", "tipoSangre", { unique: false });
+    usuario.createIndex("pecho", "pecho", { unique: false });
+    usuario.createIndex("cintura", "cintura", { unique: false });
+    usuario.createIndex("cadera", "cadera", { unique: false });
+    usuario.createIndex("brazo", "brazo", { unique: false });
+    usuario.createIndex("presionArterial", "presionArterial", { unique: false });
+    usuario.createIndex("frecuenciaCardiaca", "frecuenciaCardiaca", { unique: false });
+    usuario.createIndex("objetivoEntrenamiento", "objetivoEntrenamiento", { unique: false });
+    usuario.createIndex("intensidadEntrenamiento", "intensidadEntrenamiento", { unique: false });
+  } else if (oldVersion < 2) {
+    // Si la tabla ya existe pero necesitamos agregar nuevos índices
+    console.log("Actualizando tabla Usuario con nuevos campos...");
+    // No podemos modificar índices en una tabla existente directamente
+    // Los nuevos campos se agregarán automáticamente cuando se guarden datos
   }
 
   // MÁQUINAS
   if (!db.objectStoreNames.contains("Maquinas")) {
-    console.log("📝 Creando tabla Maquinas...");
+    console.log("Creando tabla Maquinas...");
     const maquinas = db.createObjectStore("Maquinas", {
       keyPath: "id_maquina",
       autoIncrement: true,
@@ -66,7 +71,7 @@ function crearTablas(db) {
 
   // EJERCICIOS
   if (!db.objectStoreNames.contains("Ejercicios")) {
-    console.log("📝 Creando tabla Ejercicios...");
+    console.log("Creando tabla Ejercicios...");
     const ejercicios = db.createObjectStore("Ejercicios", {
       keyPath: "id_ejercicio",
       autoIncrement: true,
@@ -80,7 +85,7 @@ function crearTablas(db) {
 
   // RUTINAS
   if (!db.objectStoreNames.contains("Rutinas")) {
-    console.log("📝 Creando tabla Rutinas...");
+    console.log("Creando tabla Rutinas...");
     const rutinas = db.createObjectStore("Rutinas", {
       keyPath: "id_rutina",
       autoIncrement: true,
@@ -91,8 +96,9 @@ function crearTablas(db) {
     rutinas.createIndex("fecha", "fecha", { unique: false });
   }
 
-  console.log("✅ Todas las tablas creadas exitosamente");
+  console.log("Todas las tablas creadas/actualizadas exitosamente");
 }
+
 // USUARIO - Agregar
 export function addUser(usuario) {
   return new Promise((resolve, reject) => {
@@ -101,12 +107,12 @@ export function addUser(usuario) {
     const request = store.add(usuario);
 
     request.onsuccess = () => {
-      console.log("✅ Usuario agregado con ID:", request.result);
+      console.log("Usuario agregado con ID:", request.result);
       resolve(request.result);
     };
 
     request.onerror = () => {
-      console.error("❌ Error al agregar usuario:", request.error);
+      console.error("Error al agregar usuario:", request.error);
       reject("Error al agregar usuario");
     };
   });
@@ -161,12 +167,12 @@ export function updateUser(idUsuario, datosActualizados) {
     const request = store.put(datosActualizados);
 
     request.onsuccess = () => {
-      console.log("✅ Usuario actualizado con ID:", request.result);
+      console.log("Usuario actualizado con ID:", request.result);
       resolve(request.result);
     };
 
     request.onerror = () => {
-      console.error("❌ Error al actualizar usuario:", request.error);
+      console.error("Error al actualizar usuario:", request.error);
       reject("Error al actualizar usuario");
     };
   });
@@ -180,12 +186,12 @@ export function addSalud(saludData) {
     const request = store.add(saludData);
 
     request.onsuccess = () => {
-      console.log("✅ Datos de salud guardados con ID:", request.result);
+      console.log("Datos de salud guardados con ID:", request.result);
       resolve(request.result);
     };
 
     request.onerror = () => {
-      console.error("❌ Error al guardar salud:", request.error);
+      console.error("Error al guardar salud:", request.error);
       reject("Error al guardar datos de salud");
     };
   });
@@ -241,12 +247,12 @@ export function updateSalud(id, saludData) {
     const request = store.put(saludData);
 
     request.onsuccess = () => {
-      console.log("✅ Datos de salud actualizados con ID:", request.result);
+      console.log("Datos de salud actualizados con ID:", request.result);
       resolve(request.result);
     };
 
     request.onerror = () => {
-      console.error("❌ Error al actualizar salud:", request.error);
+      console.error("Error al actualizar salud:", request.error);
       reject("Error al actualizar datos de salud");
     };
   });
@@ -260,7 +266,7 @@ export function deleteSalud(id) {
     const request = store.delete(id);
 
     request.onsuccess = () => {
-      console.log("✅ Registro de salud eliminado");
+      console.log("Registro de salud eliminado");
       resolve("Registro eliminado");
     };
 

@@ -2,14 +2,32 @@ import { initDB, updateUser, getUserById } from "/JS/BD.js";
 
 let dbInstance = null;
 
+// Definir objetivos de entrenamiento con descripciones
+const objetivosEntrenamiento = [
+  { valor: "bajar-peso", nombre: "Bajar de peso", descripcion: "Entrenamiento centrado en quema de grasa y cardio." },
+  { valor: "aumentar-masa", nombre: "Aumentar masa muscular", descripcion: "Rutinas de fuerza e hipertrofia progresiva." },
+  { valor: "mejorar-resistencia", nombre: "Mejorar resistencia", descripcion: "Ejercicios de alto volumen para resistencia cardiovascular." },
+  { valor: "definicion", nombre: "Definición muscular", descripcion: "Tonificación con enfoque en repeticiones altas." },
+  { valor: "mantener", nombre: "Mantener condición física", descripcion: "Entrenamientos balanceados entre fuerza y cardio." },
+  { valor: "flexibilidad", nombre: "Aumentar flexibilidad", descripcion: "Ejercicios suaves de estiramiento y movilidad." }
+];
+
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("========== INICIANDO HEALTHDATA ==========");
 
   const form = document.getElementById("healthForm");
   const successMessage = document.getElementById("successMessage");
   const errorMessage = document.getElementById("errorMessage");
+  const objetivoSelect = document.getElementById("objetivoEntrenamiento");
+  const descripcionObjetivo = document.getElementById("descripcionObjetivo");
 
-  console.log("Elementos encontrados:", { form: !!form, successMessage: !!successMessage, errorMessage: !!errorMessage });
+  console.log("Elementos encontrados:", { 
+    form: !!form, 
+    successMessage: !!successMessage, 
+    errorMessage: !!errorMessage,
+    objetivoSelect: !!objetivoSelect,
+    descripcionObjetivo: !!descripcionObjetivo
+  });
 
   if (!form) {
     console.error("No se encontró formulario");
@@ -19,6 +37,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!successMessage || !errorMessage) {
     console.error("No se encontraron divs de mensajes. Verifica que existan en el HTML");
     return;
+  }
+
+  // Mostrar descripción del objetivo cuando se seleccione
+  if (objetivoSelect && descripcionObjetivo) {
+    objetivoSelect.addEventListener("change", (e) => {
+      const valorSeleccionado = e.target.value;
+      const objetivo = objetivosEntrenamiento.find(obj => obj.valor === valorSeleccionado);
+      
+      if (objetivo) {
+        descripcionObjetivo.textContent = objetivo.descripcion;
+        descripcionObjetivo.style.display = "block";
+        console.log("Objetivo seleccionado:", objetivo.nombre);
+      } else {
+        descripcionObjetivo.style.display = "none";
+      }
+    });
   }
 
   try {
@@ -53,6 +87,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tipoSangre = document.getElementById("tipoSangre")?.value || "";
     const presionArterial = document.getElementById("presionArterial")?.value || "";
     const frecuenciaCardiaca = document.getElementById("frecuenciaCardiaca")?.value || "";
+    const objetivoEntrenamiento = document.getElementById("objetivoEntrenamiento")?.value || "";
+    const intensidadEntrenamiento = document.getElementById("intensidadEntrenamiento")?.value || "";
 
     const condiciones = Array.from(document.querySelectorAll('input[name="conditions"]:checked'))
       .map(cb => cb.value)
@@ -89,6 +125,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         tipoSangre: tipoSangre || usuario.tipoSangre,
         presionArterial: presionArterial || usuario.presionArterial,
         frecuenciaCardiaca: frecuenciaCardiaca ? parseInt(frecuenciaCardiaca) : usuario.frecuenciaCardiaca,
+        objetivoEntrenamiento: objetivoEntrenamiento || usuario.objetivoEntrenamiento,
+        intensidadEntrenamiento: intensidadEntrenamiento || usuario.intensidadEntrenamiento,
         condiciones: condiciones || usuario.condiciones,
         fechaActualizacion: new Date().toISOString()
       };
@@ -96,8 +134,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Actualizando...", actualizado);
       await updateUser(parseInt(idUsuario), actualizado);
       
-      showSuccess("Datos guardados!");
-      form.reset();
+      showSuccess("Datos guardados! Redirigiendo al inicio...");
+      
+      // Actualizar la sesión del usuario en localStorage
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      if (currentUser) {
+        currentUser.altura = actualizado.altura;
+        currentUser.peso = actualizado.peso;
+        currentUser.edad = actualizado.edad;
+        currentUser.objetivoEntrenamiento = actualizado.objetivoEntrenamiento;
+        currentUser.intensidadEntrenamiento = actualizado.intensidadEntrenamiento;
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      }
+
+      // Redirigir al dashboard después de 1.5 segundos
+      setTimeout(() => {
+        console.log("Redirigiendo a dashboard...");
+        window.location.href = "dashboard.html";
+      }, 1500);
 
     } catch (err) {
       console.error("Error:", err);
@@ -123,5 +177,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("SUCCESS:", msg);
   }
 
-  console.log("========== HEALTHDATA LISTO ==========");
+  console.log("HEALTHDATA LISTO");
 });

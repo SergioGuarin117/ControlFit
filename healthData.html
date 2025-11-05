@@ -27,8 +27,10 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             animation: slideIn 0.5s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideIn {
@@ -65,11 +67,18 @@
 
         .section-title {
             color: #667eea;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 24px;
         }
 
         .form-row {
@@ -118,36 +127,91 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        select {
+            cursor: pointer;
+            background-color: white;
+        }
+
         textarea {
             resize: vertical;
             min-height: 80px;
         }
 
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
+        .descripcion-objetivo {
+            background: linear-gradient(135deg, #f0f4ff, #e8f0ff);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: none;
+            color: #667eea;
+            font-size: 13px;
+            line-height: 1.6;
+            border-left: 4px solid #667eea;
+            animation: fadeInDown 0.3s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .intensidad-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-top: 10px;
         }
 
-        .checkbox-item {
+        .intensidad-option {
+            position: relative;
+        }
+
+        .intensidad-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .intensidad-label {
             display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            padding: 15px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            background: white;
         }
 
-        .checkbox-item input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-            cursor: pointer;
-            width: 18px;
-            height: 18px;
+        .intensidad-option input[type="radio"]:checked + .intensidad-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
         }
 
-        .checkbox-item label {
-            margin-bottom: 0;
-            font-weight: normal;
-            cursor: pointer;
-            font-size: 14px;
+        .intensidad-label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .intensidad-emoji {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .intensidad-text {
+            font-size: 13px;
+            font-weight: 600;
         }
 
         .btn-container {
@@ -204,6 +268,7 @@
 
         .error-message.show {
             display: block;
+            animation: shake 0.3s;
         }
 
         .success-message {
@@ -219,23 +284,13 @@
 
         .success-message.show {
             display: block;
+            animation: slideIn 0.3s;
         }
 
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .back-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .back-link a:hover {
-            text-decoration: underline;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         @media (max-width: 480px) {
@@ -254,45 +309,62 @@
             .btn-container {
                 flex-direction: column;
             }
+
+            .intensidad-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar personalizado */
+        .container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <h1>💪 ControlFit</h1>
-            <p>Registro de Datos de Salud</p>
+            <h1>ControlFit</h1>
+            <p>Registro de Datos de Salud y Objetivos</p>
         </div>
         
-
-        <div id="message"></div>
         <div id="successMessage" class="success-message"></div>
         <div id="errorMessage" class="error-message"></div>
 
         <form id="healthForm">
-
-
             <!-- Medidas Físicas -->
             <div class="form-section">
-                <div class="section-title">Medidas Físicas</div>
+                <div class="section-title">
+                    <span class="section-icon">📏</span>
+                    Medidas Físicas Básicas
+                </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="altura">Altura (cm)</label>
-                        <input type="number" id="altura" name="height" step="0.1" required>
+                        <label for="altura">Altura (cm) *</label>
+                        <input type="number" id="altura" name="height" step="0.1" required placeholder="Ej: 170">
                     </div>
                     <div class="form-group">
-                        <label for="peso">Peso (kg)</label>
-                        <input type="number" id="peso" name="weight" step="0.1" required>
+                        <label for="peso">Peso (kg) *</label>
+                        <input type="number" id="peso" name="weight" step="0.1" required placeholder="Ej: 70">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="edad">Edad</label>
-                        <input type="number" id="edad" name="chest" step="0.1" required>
+                        <input type="number" id="edad" name="edad" placeholder="Ej: 25">
                     </div>
-                    <div class="form-row full">
                     <div class="form-group">
                         <label for="tipoSangre">Tipo de Sangre</label>
                         <select id="tipoSangre" name="bloodType">
@@ -308,51 +380,116 @@
                         </select>
                     </div>
                 </div>
+            </div>
+
+            <!-- Objetivos de Entrenamiento -->
             <div class="form-section">
-                <div class="section-title">Medidas Corporales</div>
+                <div class="section-title">
+                    <span class="section-icon">🎯</span>
+                    Objetivos de Entrenamiento
+                </div>
                 
                 <div class="form-row full">
                     <div class="form-group">
-                        <label for="pecho">Pecho (cm)</label>
-                        <input type="number" id="pecho" name="height" step="0.1">
-                    </div>
-                    <div class="form-group full">
-                        <label for="cintura">Cintura (cm)</label>
-                        <input type="number" id="cintura" name="weight" step="0.1">
+                        <label for="objetivoEntrenamiento">Objetivo Principal</label>
+                        <select id="objetivoEntrenamiento" name="objetivo">
+                            <option value="">Selecciona tu objetivo</option>
+                            <option value="bajar-peso">Bajar de peso</option>
+                            <option value="aumentar-masa">Aumentar masa muscular</option>
+                            <option value="mejorar-resistencia">Mejorar resistencia</option>
+                            <option value="definicion">Definición muscular</option>
+                            <option value="mantener">Mantener condición física</option>
+                            <option value="flexibilidad">Aumentar flexibilidad</option>
+                        </select>
+                        <div id="descripcionObjetivo" class="descripcion-objetivo"></div>
                     </div>
                 </div>
 
                 <div class="form-row full">
                     <div class="form-group">
+                        <label>Intensidad de Entrenamiento</label>
+                        <div class="intensidad-options">
+                            <div class="intensidad-option">
+                                <input type="radio" id="intensidad-baja" name="intensidad" value="baja">
+                                <label for="intensidad-baja" class="intensidad-label">
+                                    <span class="intensidad-emoji">🚶</span>
+                                    <span class="intensidad-text">Baja</span>
+                                </label>
+                            </div>
+                            <div class="intensidad-option">
+                                <input type="radio" id="intensidad-media" name="intensidad" value="media">
+                                <label for="intensidad-media" class="intensidad-label">
+                                    <span class="intensidad-emoji">🏃</span>
+                                    <span class="intensidad-text">Media</span>
+                                </label>
+                            </div>
+                            <div class="intensidad-option">
+                                <input type="radio" id="intensidad-alta" name="intensidad" value="alta">
+                                <label for="intensidad-alta" class="intensidad-label">
+                                    <span class="intensidad-emoji">💪</span>
+                                    <span class="intensidad-text">Alta</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medidas Corporales -->
+            <div class="form-section">
+                <div class="section-title">
+                    <span class="section-icon">📐</span>
+                    Medidas Corporales (Opcional)
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pecho">Pecho (cm)</label>
+                        <input type="number" id="pecho" name="pecho" step="0.1" placeholder="Ej: 95">
+                    </div>
+                    <div class="form-group">
+                        <label for="cintura">Cintura (cm)</label>
+                        <input type="number" id="cintura" name="cintura" step="0.1" placeholder="Ej: 80">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
                         <label for="cadera">Cadera (cm)</label>
-                        <input type="number" id="cadera" name="chest" step="0.1">
+                        <input type="number" id="cadera" name="cadera" step="0.1" placeholder="Ej: 95">
                     </div>
                     <div class="form-group">
                         <label for="brazo">Brazo (cm)</label>
-                        <input type="number" id="brazo" name="brazo" step="0.1">
+                        <input type="number" id="brazo" name="brazo" step="0.1" placeholder="Ej: 35">
                     </div>
                 </div>
+            </div>
+
+            <!-- Datos de Frecuencia Cardíaca -->
             <div class="form-section">
-                <div class="section-title">Datos de Frecuencia Cardíaca</div>
+                <div class="section-title">
+                    <span class="section-icon">❤️</span>
+                    Datos Cardiovasculares (Opcional)
+                </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="presionArterial">Presión Arterial (mmHg)</label>
-                        <input type="text" id="presionArterial" name="bloodPressure" placeholder="120/80" step="0,1">
+                        <input type="text" id="presionArterial" name="bloodPressure" placeholder="120/80">
                     </div>
                     <div class="form-group">
-                    <label for="frecuenciaCardiaca">Frecuencia Cardíaca (bpm)</label>
-                        <input type="number" id="frecuenciaCardiaca" name="heartRate" step="0,1">
+                        <label for="frecuenciaCardiaca">Frecuencia Cardíaca (bpm)</label>
+                        <input type="number" id="frecuenciaCardiaca" name="heartRate" placeholder="Ej: 72">
                     </div>
-                </div>    
+                </div>
+            </div>
+
             <!-- Botones -->
             <div class="btn-container">
                 <button type="reset" class="btn btn-reset">Limpiar</button>
                 <button type="submit" class="btn btn-submit">Guardar Datos</button>
             </div>
         </form>
-
-
     </div>
 
     <script type="module" src="/JS/healthData.js"></script>
