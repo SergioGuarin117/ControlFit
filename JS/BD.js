@@ -331,3 +331,229 @@ export function addRutina(rutina) {
 export function getDB() {
   return db;
 }
+
+// MAQUINAS - Obtener todas
+export function getAllMaquinas() {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject("Base de datos no inicializada");
+      return;
+    }
+    
+    const transaction = db.transaction(["Maquinas"], "readonly");
+    const store = transaction.objectStore("Maquinas");
+    const request = store.getAll();
+
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
+
+    request.onerror = () => {
+      console.error("Error al obtener máquinas:", request.error);
+      reject("Error al obtener máquinas");
+    };
+  });
+}
+
+// MAQUINAS - Obtener por ID
+export function getMaquinaById(idMaquina) {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject("Base de datos no inicializada");
+      return;
+    }
+    
+    const transaction = db.transaction(["Maquinas"], "readonly");
+    const store = transaction.objectStore("Maquinas");
+    const request = store.get(idMaquina);
+
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
+
+    request.onerror = () => {
+      console.error("Error al obtener máquina:", request.error);
+      reject("Error al obtener máquina");
+    };
+  });
+}
+
+// MAQUINAS - Verificar si existe por nombre
+export function getMaquinaByName(nombreMaquina) {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject("Base de datos no inicializada");
+      return;
+    }
+    
+    const transaction = db.transaction(["Maquinas"], "readonly");
+    const store = transaction.objectStore("Maquinas");
+    const index = store.index("nombreMaquina");
+    const request = index.get(nombreMaquina);
+
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
+
+    request.onerror = () => {
+      console.error("Error al buscar máquina:", request.error);
+      reject("Error al buscar máquina");
+    };
+  });
+}
+
+// MAQUINAS - Agregar o actualizar múltiples
+export function addOrUpdateMaquinas(maquinasArray) {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject("Base de datos no inicializada");
+      return;
+    }
+
+    if (!Array.isArray(maquinasArray) || maquinasArray.length === 0) {
+      resolve([]);
+      return;
+    }
+
+    const transaction = db.transaction(["Maquinas"], "readwrite");
+    const store = transaction.objectStore("Maquinas");
+    const results = [];
+
+    let completed = 0;
+    const total = maquinasArray.length;
+
+    maquinasArray.forEach((maquina) => {
+      // Buscar si ya existe por nombre
+      const index = store.index("nombreMaquina");
+      const searchRequest = index.get(maquina.nombreMaquina);
+
+      searchRequest.onsuccess = () => {
+        const existing = searchRequest.result;
+        
+        if (existing) {
+          // Ya existe, devolver el ID existente
+          results.push({ ...maquina, id_maquina: existing.id_maquina });
+          completed++;
+          if (completed === total) {
+            resolve(results);
+          }
+        } else {
+          // No existe, agregar nueva
+          const addRequest = store.add(maquina);
+          
+          addRequest.onsuccess = () => {
+            results.push({ ...maquina, id_maquina: addRequest.result });
+            completed++;
+            if (completed === total) {
+              resolve(results);
+            }
+          };
+
+          addRequest.onerror = () => {
+            console.error("Error al agregar máquina:", addRequest.error);
+            completed++;
+            if (completed === total) {
+              resolve(results);
+            }
+          };
+        }
+      };
+
+      searchRequest.onerror = () => {
+        console.error("Error al buscar máquina:", searchRequest.error);
+        completed++;
+        if (completed === total) {
+          resolve(results);
+        }
+      };
+    });
+
+    transaction.onerror = () => {
+      console.error("Error en la transacción:", transaction.error);
+      reject("Error en la transacción");
+    };
+  });
+}
+
+// USUARIO - Guardar IDs de máquinas seleccionadas
+export function saveUserMaquinas(idUsuario, maquinasIds) {
+  return new Promise(async (resolve, reject) => {
+    if (!db) {
+      reject("Base de datos no inicializada");
+      return;
+    }
+
+    try {
+      const usuario = await getUserById(idUsuario);
+      
+      if (!usuario) {
+        reject("Usuario no encontrado");
+        return;
+      }
+
+      const usuarioActualizado = {
+        ...usuario,
+        maquinasSeleccionadas: maquinasIds,
+        fechaActualizacionMaquinas: new Date().toISOString(),
+      };
+
+      await updateUser(idUsuario, usuarioActualizado);
+      resolve(true);
+      
+    } catch (error) {
+      console.error("Error al guardar máquinas del usuario:", error);
+      reject(error);
+    }
+  });
+}
+
+// USUARIO - Obtener máquinas del usuario con detalles
+export function getUserMaquinasWithDetails(idUsuario) {
+  return new Promise(async (resolve, reject) => {
+    if (!db) {
+      reject("Base de datos no inicializada");
+      return;
+    }
+
+    try {
+      const usuario = await getUserById(idUsuario);
+      
+      if (!usuario || !usuario.maquinasSeleccionadas || usuario.maquinasSeleccionadas.length === 0) {
+        resolve([]);
+        return;
+      }
+
+      const transaction = db.transaction(["Maquinas"], "readonly");
+      const store = transaction.objectStore("Maquinas");
+      const maquinasDetails = [];
+      let completed = 0;
+      const total = usuario.maquinasSeleccionadas.length;
+
+      usuario.maquinasSeleccionadas.forEach((idMaquina) => {
+        const request = store.get(idMaquina);
+
+        request.onsuccess = () => {
+          if (request.result) {
+            maquinasDetails.push(request.result);
+          }
+          completed++;
+          if (completed === total) {
+            resolve(maquinasDetails);
+          }
+        };
+
+        request.onerror = () => {
+          console.error("Error al obtener detalle de máquina:", request.error);
+          completed++;
+          if (completed === total) {
+            resolve(maquinasDetails);
+          }
+        };
+      });
+      
+    } catch (error) {
+      console.error("Error al obtener máquinas del usuario:", error);
+      reject(error);
+    }
+  });
+}

@@ -302,7 +302,7 @@
                     </a>
                 </li>
                 <li class="navbar-item">
-                    <a href="#" class="navbar-link" data-section="herramientas">
+                    <a href="equipment.html" class="navbar-link" data-section="herramientas">
                         🏋️ Herramientas
                     </a>
                 </li>
@@ -355,68 +355,98 @@
         </div>
     </main>
 
-    <script type="module">
-        // Obtener datos del usuario actual
-        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+<script type="module">
+    // Obtener datos del usuario actual
+const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+// Actualizar nombre del usuario
+if (currentUser.nombre) {
+    const firstName = currentUser.nombre.split(' ')[0];
+    document.getElementById('welcomeTitle').textContent = `¡Bienvenido, ${firstName}!`;
+    document.getElementById('profileName').textContent = firstName;
+    document.getElementById('profileIcon').textContent = firstName.charAt(0).toUpperCase();
+}
+
+// Menú móvil
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const navbarMenu = document.getElementById('navbarMenu');
+
+mobileMenuBtn.addEventListener('click', () => {
+    navbarMenu.classList.toggle('active');
+});
+
+// Navegación entre secciones
+const navLinks = document.querySelectorAll('.navbar-link');
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
         
-        // Actualizar nombre del usuario
-        if (currentUser.nombre) {
-            const firstName = currentUser.nombre.split(' ')[0];
-            document.getElementById('welcomeTitle').textContent = `¡Bienvenido, ${firstName}!`;
-            document.getElementById('profileName').textContent = firstName;
-            document.getElementById('profileIcon').textContent = firstName.charAt(0).toUpperCase();
+        // Remover clase active de todos
+        navLinks.forEach(l => l.classList.remove('active'));
+        
+        // Agregar clase active al seleccionado
+        link.classList.add('active');
+        
+        const section = link.dataset.section;
+        console.log('Navegando a:', section);
+        
+        // Cerrar menú móvil
+        navbarMenu.classList.remove('active');
+        
+        // Navegación según sección
+        switch(section) {
+            case 'inicio':
+                // Ya estamos en el inicio
+                break;
+            case 'rutinas':
+                window.location.href = 'routines.html';
+                break;
+            case 'herramientas':
+                window.location.href = 'equipment.html';
+                break;
+            case 'ejercicios':
+                console.log('Sección de ejercicios (pendiente)');
+                // window.location.href = 'exercises.html';
+                break;
+            default:
+                console.log('Sección no implementada:', section);
         }
+    });
+});
 
-        // Menú móvil
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navbarMenu = document.getElementById('navbarMenu');
+// Cards interactivas
+const cards = document.querySelectorAll('.dashboard-card');
+cards.forEach(card => {
+    card.addEventListener('click', () => {
+        const cardType = card.dataset.card;
+        console.log('Card clickeada:', cardType);
+        
+        // Navegación según tipo de card
+        switch(cardType) {
+            case 'rutinas':
+                window.location.href = 'routines.html';
+                break;
+            case 'herramientas':
+                window.location.href = 'equipment.html';
+                break;
+            case 'ejercicios':
+                console.log('Ejercicios (pendiente)');
+                // window.location.href = 'exercises.html';
+                break;
+            case 'perfil':
+                window.location.href = 'profile.html';
+                break;
+            default:
+                console.log('Card no implementada:', cardType);
+        }
+    });
+});
 
-        mobileMenuBtn.addEventListener('click', () => {
-            navbarMenu.classList.toggle('active');
-        });
-
-        // Navegación entre secciones
-        const navLinks = document.querySelectorAll('.navbar-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Remover clase active de todos
-                navLinks.forEach(l => l.classList.remove('active'));
-                
-                // Agregar clase active al seleccionado
-                link.classList.add('active');
-                
-                const section = link.dataset.section;
-                console.log('Navegando a:', section);
-                
-                // Cerrar menú móvil
-                navbarMenu.classList.remove('active');
-                
-                // Aquí irá la lógica para cambiar contenido según la sección
-            });
-        });
-
-        // Cards interactivas
-        const cards = document.querySelectorAll('.dashboard-card');
-        cards.forEach(card => {
-            card.addEventListener('click', () => {
-                const cardType = card.dataset.card;
-                console.log('Card clickeada:', cardType);
-                
-                // Aquí irá la lógica para cada card
-                if (cardType === 'perfil') {
-                    // Ir a perfil
-                    console.log('Ir a perfil');
-                }
-            });
-        });
-
-        // Botón de perfil
-        document.getElementById('profileBtn').addEventListener('click', () => {
-            console.log('Botón de perfil clickeado');
-            window.location.href = 'profile.html';
-        });
-    </script>
+// Botón de perfil
+document.getElementById('profileBtn').addEventListener('click', () => {
+    console.log('Botón de perfil clickeado');
+    window.location.href = 'profile.html';
+});
+</script>
 </body>
 </html>

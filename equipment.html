@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlFit - Herramientas Disponibles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-title h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .equipment-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 28px;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .equipment-item {
+            position: relative;
+        }
+
+        .equipment-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .equipment-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .equipment-item input[type="checkbox"]:checked + .equipment-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+
+        .equipment-label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .equipment-emoji {
+            font-size: 24px;
+        }
+
+        .equipment-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .button-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .success-message, .error-message {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            color: white;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+        }
+
+        .success-message.show, .error-message.show {
+            display: block;
+        }
+
+        .select-all-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .select-all-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .header-title h1 {
+                font-size: 24px;
+            }
+
+            .equipment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="header">
+            <button class="back-button" onclick="window.location.href='dashboard.html'">
+                ← Volver
+            </button>
+            <div class="header-title">
+                <h1>🏋️ Herramientas Disponibles</h1>
+                <p>Selecciona el equipamiento disponible en tu gimnasio</p>
+            </div>
+            <div style="width: 100px;"></div>
+        </div>
+
+        <form id="equipmentForm">
+            <!-- Máquinas de Cardio -->
+            <div class="equipment-section">
+                <div class="section-title">
+                    <span class="section-icon">🏃</span>
+                    Máquinas de Cardio
+                </div>
+                <div class="select-all-container">
+                    <button type="button" class="select-all-btn" data-section="cardio">Seleccionar todas</button>
+                </div>
+                <div class="equipment-grid">
+                    <div class="equipment-item">
+                        <input type="checkbox" id="caminadora" name="equipment" value="caminadora" data-category="cardio">
+                        <label for="caminadora" class="equipment-label">
+                            <span class="equipment-emoji">🏃‍♂️</span>
+                            <span class="equipment-text">Caminadora</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="bicicleta-estatica" name="equipment" value="bicicleta-estatica" data-category="cardio">
+                        <label for="bicicleta-estatica" class="equipment-label">
+                            <span class="equipment-emoji">🚴</span>
+                            <span class="equipment-text">Bicicleta Estática</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="eliptica" name="equipment" value="eliptica" data-category="cardio">
+                        <label for="eliptica" class="equipment-label">
+                            <span class="equipment-emoji">🎯</span>
+                            <span class="equipment-text">Elíptica</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="remo" name="equipment" value="remo" data-category="cardio">
+                        <label for="remo" class="equipment-label">
+                            <span class="equipment-emoji">🚣</span>
+                            <span class="equipment-text">Máquina de Remo</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="escaladora" name="equipment" value="escaladora" data-category="cardio">
+                        <label for="escaladora" class="equipment-label">
+                            <span class="equipment-emoji">🪜</span>
+                            <span class="equipment-text">Escaladora</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="bicicleta-spinning" name="equipment" value="bicicleta-spinning" data-category="cardio">
+                        <label for="bicicleta-spinning" class="equipment-label">
+                            <span class="equipment-emoji">🚴‍♀️</span>
+                            <span class="equipment-text">Bicicleta Spinning</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Máquinas de Peso -->
+            <div class="equipment-section">
+                <div class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    Máquinas de Peso
+                </div>
+                <div class="select-all-container">
+                    <button type="button" class="select-all-btn" data-section="maquinas">Seleccionar todas</button>
+                </div>
+                <div class="equipment-grid">
+                    <div class="equipment-item">
+                        <input type="checkbox" id="press-pecho" name="equipment" value="press-pecho" data-category="maquinas">
+                        <label for="press-pecho" class="equipment-label">
+                            <span class="equipment-emoji">💪</span>
+                            <span class="equipment-text">Press de Pecho</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="press-piernas" name="equipment" value="press-piernas" data-category="maquinas">
+                        <label for="press-piernas" class="equipment-label">
+                            <span class="equipment-emoji">🦵</span>
+                            <span class="equipment-text">Press de Piernas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="extension-piernas" name="equipment" value="extension-piernas" data-category="maquinas">
+                        <label for="extension-piernas" class="equipment-label">
+                            <span class="equipment-emoji">🦿</span>
+                            <span class="equipment-text">Extensión de Piernas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="curl-piernas" name="equipment" value="curl-piernas" data-category="maquinas">
+                        <label for="curl-piernas" class="equipment-label">
+                            <span class="equipment-emoji">🦵</span>
+                            <span class="equipment-text">Curl de Piernas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="polea-alta" name="equipment" value="polea-alta" data-category="maquinas">
+                        <label for="polea-alta" class="equipment-label">
+                            <span class="equipment-emoji">⬇️</span>
+                            <span class="equipment-text">Polea Alta</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="polea-baja" name="equipment" value="polea-baja" data-category="maquinas">
+                        <label for="polea-baja" class="equipment-label">
+                            <span class="equipment-emoji">⬆️</span>
+                            <span class="equipment-text">Polea Baja</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="peck-deck" name="equipment" value="peck-deck" data-category="maquinas">
+                        <label for="peck-deck" class="equipment-label">
+                            <span class="equipment-emoji">🤲</span>
+                            <span class="equipment-text">Peck Deck</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="smith" name="equipment" value="smith" data-category="maquinas">
+                        <label for="smith" class="equipment-label">
+                            <span class="equipment-emoji">🏗️</span>
+                            <span class="equipment-text">Máquina Smith</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="aductores" name="equipment" value="aductores" data-category="maquinas">
+                        <label for="aductores" class="equipment-label">
+                            <span class="equipment-emoji">🔀</span>
+                            <span class="equipment-text">Aductores</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="abductores" name="equipment" value="abductores" data-category="maquinas">
+                        <label for="abductores" class="equipment-label">
+                            <span class="equipment-emoji">↔️</span>
+                            <span class="equipment-text">Abductores</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="hack-squat" name="equipment" value="hack-squat" data-category="maquinas">
+                        <label for="hack-squat" class="equipment-label">
+                            <span class="equipment-emoji">🔺</span>
+                            <span class="equipment-text">Hack Squat</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="pantorrillas" name="equipment" value="pantorrillas" data-category="maquinas">
+                        <label for="pantorrillas" class="equipment-label">
+                            <span class="equipment-emoji">👣</span>
+                            <span class="equipment-text">Máquina Pantorrillas</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pesos Libres -->
+            <div class="equipment-section">
+                <div class="section-title">
+                    <span class="section-icon">🏋️</span>
+                    Pesos Libres
+                </div>
+                <div class="select-all-container">
+                    <button type="button" class="select-all-btn" data-section="pesos">Seleccionar todos</button>
+                </div>
+                <div class="equipment-grid">
+                    <div class="equipment-item">
+                        <input type="checkbox" id="mancuernas" name="equipment" value="mancuernas" data-category="pesos">
+                        <label for="mancuernas" class="equipment-label">
+                            <span class="equipment-emoji">🏋️‍♂️</span>
+                            <span class="equipment-text">Mancuernas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="barra-olimpica" name="equipment" value="barra-olimpica" data-category="pesos">
+                        <label for="barra-olimpica" class="equipment-label">
+                            <span class="equipment-emoji">➖</span>
+                            <span class="equipment-text">Barra Olímpica</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="barra-z" name="equipment" value="barra-z" data-category="pesos">
+                        <label for="barra-z" class="equipment-label">
+                            <span class="equipment-emoji">〰️</span>
+                            <span class="equipment-text">Barra Z</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="discos" name="equipment" value="discos" data-category="pesos">
+                        <label for="discos" class="equipment-label">
+                            <span class="equipment-emoji">⚫</span>
+                            <span class="equipment-text">Discos de Peso</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="kettlebells" name="equipment" value="kettlebells" data-category="pesos">
+                        <label for="kettlebells" class="equipment-label">
+                            <span class="equipment-emoji">🎯</span>
+                            <span class="equipment-text">Kettlebells</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="barra-recta" name="equipment" value="barra-recta" data-category="pesos">
+                        <label for="barra-recta" class="equipment-label">
+                            <span class="equipment-emoji">━</span>
+                            <span class="equipment-text">Barra Recta</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipamiento Funcional -->
+            <div class="equipment-section">
+                <div class="section-title">
+                    <span class="section-icon">🎯</span>
+                    Equipamiento Funcional
+                </div>
+                <div class="select-all-container">
+                    <button type="button" class="select-all-btn" data-section="funcional">Seleccionar todos</button>
+                </div>
+                <div class="equipment-grid">
+                    <div class="equipment-item">
+                        <input type="checkbox" id="trx" name="equipment" value="trx" data-category="funcional">
+                        <label for="trx" class="equipment-label">
+                            <span class="equipment-emoji">🔗</span>
+                            <span class="equipment-text">TRX</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="balon-medicinal" name="equipment" value="balon-medicinal" data-category="funcional">
+                        <label for="balon-medicinal" class="equipment-label">
+                            <span class="equipment-emoji">⚽</span>
+                            <span class="equipment-text">Balón Medicinal</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="cuerda-batalla" name="equipment" value="cuerda-batalla" data-category="funcional">
+                        <label for="cuerda-batalla" class="equipment-label">
+                            <span class="equipment-emoji">〰️</span>
+                            <span class="equipment-text">Cuerda de Batalla</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="bosu" name="equipment" value="bosu" data-category="funcional">
+                        <label for="bosu" class="equipment-label">
+                            <span class="equipment-emoji">🌓</span>
+                            <span class="equipment-text">Bosu</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="step" name="equipment" value="step" data-category="funcional">
+                        <label for="step" class="equipment-label">
+                            <span class="equipment-emoji">📦</span>
+                            <span class="equipment-text">Step</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="banda-elastica" name="equipment" value="banda-elastica" data-category="funcional">
+                        <label for="banda-elastica" class="equipment-label">
+                            <span class="equipment-emoji">➰</span>
+                            <span class="equipment-text">Bandas Elásticas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="foam-roller" name="equipment" value="foam-roller" data-category="funcional">
+                        <label for="foam-roller" class="equipment-label">
+                            <span class="equipment-emoji">🎲</span>
+                            <span class="equipment-text">Foam Roller</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="colchonetas" name="equipment" value="colchonetas" data-category="funcional">
+                        <label for="colchonetas" class="equipment-label">
+                            <span class="equipment-emoji">🧘</span>
+                            <span class="equipment-text">Colchonetas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="caja-pliometrica" name="equipment" value="caja-pliometrica" data-category="funcional">
+                        <label for="caja-pliometrica" class="equipment-label">
+                            <span class="equipment-emoji">📦</span>
+                            <span class="equipment-text">Caja Pliométrica</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="saco-arena" name="equipment" value="saco-arena" data-category="funcional">
+                        <label for="saco-arena" class="equipment-label">
+                            <span class="equipment-emoji">🏋️</span>
+                            <span class="equipment-text">Saco de Arena</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accesorios -->
+            <div class="equipment-section">
+                <div class="section-title">
+                    <span class="section-icon">🔧</span>
+                    Accesorios
+                </div>
+                <div class="select-all-container">
+                    <button type="button" class="select-all-btn" data-section="accesorios">Seleccionar todos</button>
+                </div>
+                <div class="equipment-grid">
+                    <div class="equipment-item">
+                        <input type="checkbox" id="barra-dominadas" name="equipment" value="barra-dominadas" data-category="accesorios">
+                        <label for="barra-dominadas" class="equipment-label">
+                            <span class="equipment-emoji">⬆️</span>
+                            <span class="equipment-text">Barra Dominadas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="paralelas" name="equipment" value="paralelas" data-category="accesorios">
+                        <label for="paralelas" class="equipment-label">
+                            <span class="equipment-emoji">⬜</span>
+                            <span class="equipment-text">Paralelas</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="banco-plano" name="equipment" value="banco-plano" data-category="accesorios">
+                        <label for="banco-plano" class="equipment-label">
+                            <span class="equipment-emoji">🪑</span>
+                            <span class="equipment-text">Banco Plano</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="banco-inclinado" name="equipment" value="banco-inclinado" data-category="accesorios">
+                        <label for="banco-inclinado" class="equipment-label">
+                            <span class="equipment-emoji">🪑</span>
+                            <span class="equipment-text">Banco Inclinado</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="guantes" name="equipment" value="guantes" data-category="accesorios">
+                        <label for="guantes" class="equipment-label">
+                            <span class="equipment-emoji">🧤</span>
+                            <span class="equipment-text">Guantes</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="cinturon-peso" name="equipment" value="cinturon-peso" data-category="accesorios">
+                        <label for="cinturon-peso" class="equipment-label">
+                            <span class="equipment-emoji">⚫</span>
+                            <span class="equipment-text">Cinturón de Peso</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="straps" name="equipment" value="straps" data-category="accesorios">
+                        <label for="straps" class="equipment-label">
+                            <span class="equipment-emoji">🎀</span>
+                            <span class="equipment-text">Straps</span>
+                        </label>
+                    </div>
+                    <div class="equipment-item">
+                        <input type="checkbox" id="cuerdas-saltar" name="equipment" value="cuerdas-saltar" data-category="accesorios">
+                        <label for="cuerdas-saltar" class="equipment-label">
+                            <span class="equipment-emoji">➰</span>
+                            <span class="equipment-text">Cuerdas para Saltar</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="button-container">
+                <button type="button" class="btn btn-reset" id="resetBtn">
+                    🔄 Limpiar Selección
+                </button>
+                <button type="submit" class="btn btn-save">
+                    💾 Guardar Equipamiento
+                </button>
+            </div>
+        </form>
+    </div>
+    <script type="module">
+      import { initDB, getUserById, addOrUpdateMaquinas, saveUserMaquinas, getUserMaquinasWithDetails } from '/JS/BD.js';
+
+let dbInstance = null;
+let maquinasMap = new Map();
+
+// Nombres EXACTOS que coinciden con el HTML
+const equipamientoData = {
+    cardio: [
+        { nombre: 'Caminadora', emoji: '🏃‍♂️' },
+        { nombre: 'Bicicleta Estática', emoji: '🚴' },
+        { nombre: 'Elíptica', emoji: '🎯' },
+        { nombre: 'Máquina de Remo', emoji: '🚣' },
+        { nombre: 'Escaladora', emoji: '🪜' },
+        { nombre: 'Bicicleta Spinning', emoji: '🚴‍♀️' }
+    ],
+    maquinas: [
+        { nombre: 'Press de Pecho', emoji: '💪' },
+        { nombre: 'Press de Piernas', emoji: '🦵' },
+        { nombre: 'Extensión de Piernas', emoji: '🦿' },
+        { nombre: 'Curl de Piernas', emoji: '🦵' },
+        { nombre: 'Polea Alta', emoji: '⬇️' },
+        { nombre: 'Polea Baja', emoji: '⬆️' },
+        { nombre: 'Peck Deck', emoji: '🤲' },
+        { nombre: 'Máquina Smith', emoji: '🏗️' },
+        { nombre: 'Aductores', emoji: '🔀' },
+        { nombre: 'Abductores', emoji: '↔️' },
+        { nombre: 'Hack Squat', emoji: '🔺' },
+        { nombre: 'Máquina Pantorrillas', emoji: '👣' }
+    ],
+    pesos: [
+        { nombre: 'Mancuernas', emoji: '🏋️‍♂️' },
+        { nombre: 'Barra Olímpica', emoji: '➖' },
+        { nombre: 'Barra Z', emoji: '〰️' },
+        { nombre: 'Discos de Peso', emoji: '⚫' },
+        { nombre: 'Kettlebells', emoji: '🎯' },
+        { nombre: 'Barra Recta', emoji: '━' }
+    ],
+    funcional: [
+        { nombre: 'TRX', emoji: '🔗' },
+        { nombre: 'Balón Medicinal', emoji: '⚽' },
+        { nombre: 'Cuerda de Batalla', emoji: '〰️' },
+        { nombre: 'Bosu', emoji: '🌓' },
+        { nombre: 'Step', emoji: '📦' },
+        { nombre: 'Bandas Elásticas', emoji: '➰' },
+        { nombre: 'Foam Roller', emoji: '🎲' },
+        { nombre: 'Colchonetas', emoji: '🧘' },
+        { nombre: 'Caja Pliométrica', emoji: '📦' },
+        { nombre: 'Saco de Arena', emoji: '🏋️' }
+    ],
+    accesorios: [
+        { nombre: 'Barra Dominadas', emoji: '⬆️' },
+        { nombre: 'Paralelas', emoji: '⬜' },
+        { nombre: 'Banco Plano', emoji: '🪑' },
+        { nombre: 'Banco Inclinado', emoji: '🪑' },
+        { nombre: 'Guantes', emoji: '🧤' },
+        { nombre: 'Cinturón de Peso', emoji: '⚫' },
+        { nombre: 'Straps', emoji: '🎀' },
+        { nombre: 'Cuerdas para Saltar', emoji: '➰' }
+    ]
+};
+
+// Mapeo de IDs del HTML a nombres reales
+const htmlToRealName = {
+    'caminadora': 'Caminadora',
+    'bicicleta-estatica': 'Bicicleta Estática',
+    'eliptica': 'Elíptica',
+    'remo': 'Máquina de Remo',
+    'escaladora': 'Escaladora',
+    'bicicleta-spinning': 'Bicicleta Spinning',
+    'press-pecho': 'Press de Pecho',
+    'press-piernas': 'Press de Piernas',
+    'extension-piernas': 'Extensión de Piernas',
+    'curl-piernas': 'Curl de Piernas',
+    'polea-alta': 'Polea Alta',
+    'polea-baja': 'Polea Baja',
+    'peck-deck': 'Peck Deck',
+    'smith': 'Máquina Smith',
+    'aductores': 'Aductores',
+    'abductores': 'Abductores',
+    'hack-squat': 'Hack Squat',
+    'pantorrillas': 'Máquina Pantorrillas',
+    'mancuernas': 'Mancuernas',
+    'barra-olimpica': 'Barra Olímpica',
+    'barra-z': 'Barra Z',
+    'discos': 'Discos de Peso',
+    'kettlebells': 'Kettlebells',
+    'barra-recta': 'Barra Recta',
+    'trx': 'TRX',
+    'balon-medicinal': 'Balón Medicinal',
+    'cuerda-batalla': 'Cuerda de Batalla',
+    'bosu': 'Bosu',
+    'step': 'Step',
+    'banda-elastica': 'Bandas Elásticas',
+    'foam-roller': 'Foam Roller',
+    'colchonetas': 'Colchonetas',
+    'caja-pliometrica': 'Caja Pliométrica',
+    'saco-arena': 'Saco de Arena',
+    'barra-dominadas': 'Barra Dominadas',
+    'paralelas': 'Paralelas',
+    'banco-plano': 'Banco Plano',
+    'banco-inclinado': 'Banco Inclinado',
+    'guantes': 'Guantes',
+    'cinturon-peso': 'Cinturón de Peso',
+    'straps': 'Straps',
+    'cuerdas-saltar': 'Cuerdas para Saltar'
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('========== EQUIPMENT CARGADO ==========');
+
+    const form = document.getElementById('equipmentForm');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const idUsuario = localStorage.getItem('id_usuario');
+    if (!idUsuario) {
+        showError('Debes iniciar sesión primero');
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+    }
+
+    try {
+        dbInstance = await initDB();
+        console.log('BD inicializada');
+
+        await inicializarMaquinas();
+        console.log('Máquinas inicializadas:', maquinasMap.size);
+
+        await cargarSeleccionUsuario(parseInt(idUsuario));
+        console.log('Selección cargada');
+
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Error al cargar el equipamiento');
+    }
+
+    async function inicializarMaquinas() {
+        const todasLasMaquinas = [];
+
+        Object.keys(equipamientoData).forEach(categoria => {
+            equipamientoData[categoria].forEach(equipo => {
+                const maquina = {
+                    nombreMaquina: equipo.nombre,
+                    musculacion: categoria === 'maquinas' ? 1 : 0,
+                    cardio: categoria === 'cardio' ? 1 : 0,
+                    bajarPeso: (categoria === 'cardio' || categoria === 'funcional') ? 1 : 0
+                };
+                todasLasMaquinas.push(maquina);
+            });
+        });
+
+        console.log('Guardando máquinas...', todasLasMaquinas.length);
+        const resultado = await addOrUpdateMaquinas(todasLasMaquinas);
+        
+        resultado.forEach(maquina => {
+            maquinasMap.set(maquina.nombreMaquina, maquina.id_maquina);
+        });
+
+        console.log('Mapa creado:', Array.from(maquinasMap.entries()));
+    }
+
+    async function cargarSeleccionUsuario(idUsuario) {
+        try {
+            const maquinasUsuario = await getUserMaquinasWithDetails(idUsuario);
+            
+            if (maquinasUsuario && maquinasUsuario.length > 0) {
+                console.log('Máquinas del usuario:', maquinasUsuario);
+                
+                maquinasUsuario.forEach(maquina => {
+                    // Buscar el checkbox por el nombre de la máquina
+                    const idHtml = Object.keys(htmlToRealName).find(
+                        key => htmlToRealName[key] === maquina.nombreMaquina
+                    );
+                    
+                    if (idHtml) {
+                        const checkbox = document.getElementById(idHtml);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            console.log('Checkbox marcado:', idHtml);
+                        }
+                    }
+                });
+
+                actualizarBotonesSeleccionar();
+            }
+        } catch (error) {
+            console.error('Error al cargar selección:', error);
+        }
+    }
+
+    const selectAllBtns = document.querySelectorAll('.select-all-btn');
+    selectAllBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const section = btn.dataset.section;
+            const checkboxes = document.querySelectorAll(`input[data-category="${section}"]`);
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+            btn.textContent = allChecked ? 'Seleccionar todas' : 'Deseleccionar todas';
+        });
+    });
+
+    function actualizarBotonesSeleccionar() {
+        selectAllBtns.forEach(btn => {
+            const section = btn.dataset.section;
+            const checkboxes = document.querySelectorAll(`input[data-category="${section}"]`);
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            if (allChecked && checkboxes.length > 0) {
+                btn.textContent = 'Deseleccionar todas';
+            } else {
+                btn.textContent = 'Seleccionar todas';
+            }
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('input[name="equipment"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            
+            selectAllBtns.forEach(btn => btn.textContent = 'Seleccionar todas');
+            showSuccess('Selección limpiada');
+            setTimeout(() => successMessage.classList.remove('show'), 2000);
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Guardando...');
+
+            const checkboxes = document.querySelectorAll('input[name="equipment"]:checked');
+            const idsHtmlSeleccionados = Array.from(checkboxes).map(cb => cb.value);
+
+            console.log('IDs HTML seleccionados:', idsHtmlSeleccionados);
+
+            if (idsHtmlSeleccionados.length === 0) {
+                showError('Selecciona al menos un equipamiento');
+                return;
+            }
+
+            // Convertir IDs del HTML a nombres reales
+            const nombresReales = idsHtmlSeleccionados.map(idHtml => htmlToRealName[idHtml]).filter(n => n);
+            console.log('Nombres reales:', nombresReales);
+
+            // Convertir nombres a IDs de BD
+            const idsBD = nombresReales.map(nombre => maquinasMap.get(nombre)).filter(id => id);
+            console.log('IDs de BD:', idsBD);
+
+            if (idsBD.length === 0) {
+                showError('Error al procesar la selección');
+                return;
+            }
+
+            try {
+                await saveUserMaquinas(parseInt(idUsuario), idsBD);
+                console.log('Guardado exitoso en BD');
+                showSuccess(`¡Equipamiento guardado! (${idsBD.length} elementos)`);
+
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser) {
+                    currentUser.maquinasSeleccionadas = idsBD;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
+
+            } catch (error) {
+                console.error('Error al guardar:', error);
+                showError('Error al guardar el equipamiento');
+            }
+        });
+    }
+
+    function showError(msg) {
+        if (errorMessage) {
+            errorMessage.textContent = msg;
+            errorMessage.classList.add('show');
+            if (successMessage) successMessage.classList.remove('show');
+            setTimeout(() => errorMessage.classList.remove('show'), 4000);
+        }
+        console.error('ERROR:', msg);
+    }
+
+    function showSuccess(msg) {
+        if (successMessage) {
+            successMessage.textContent = msg;
+            successMessage.classList.add('show');
+            if (errorMessage) errorMessage.classList.remove('show');
+            setTimeout(() => successMessage.classList.remove('show'), 4000);
+        }
+        console.log('SUCCESS:', msg);
+    }
+});
+    </script>
+</body>
+</html>
