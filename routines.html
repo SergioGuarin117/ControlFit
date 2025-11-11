@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlFit - Mis Rutinas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-regenerate {
+            background: linear-gradient(135deg, #ffa502, #ffb733);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Selector de días */
+        .days-selector {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .day-btn {
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .day-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .day-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .day-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .day-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .day-btn.active .day-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Lista de ejercicios */
+        .exercises-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+            animation: slideIn 0.3s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .exercise-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .exercise-number {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .exercise-info {
+            flex: 1;
+        }
+
+        .exercise-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .exercise-machine {
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .exercise-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .exercise-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .stat-badge {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .no-routine {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-routine-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .no-routine h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .no-routine p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .exercise-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .exercise-stats {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <h1>📋 Mis Rutinas Semanales</h1>
+                <p id="weekInfo">Cargando...</p>
+            </div>
+            <div class="header-buttons">
+                <button class="btn btn-regenerate" id="regenerateBtn">
+                    🔄 Regenerar
+                </button>
+                <button class="btn btn-back" onclick="window.location.href='dashboard.html'">
+                    ← Volver
+                </button>
+            </div>
+        </div>
+
+        <div id="routineContent">
+            <div class="loading">⏳ Cargando rutinas...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { 
+            initDB, 
+            getUserById, 
+            generateWeeklyRoutine, 
+            getDayRoutineWithDetails,
+            hasRoutineThisWeek,
+            getMonday,
+            formatDate
+        } from '/JS/BD.js';
+
+        let dbInstance = null;
+        let currentDay = 1;
+        const idUsuario = parseInt(localStorage.getItem('id_usuario'));
+
+        async function init() {
+            console.log('========== ROUTINES CARGADO ==========');
+
+            if (!idUsuario) {
+                alert('Debes iniciar sesión');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                dbInstance = await initDB();
+                await loadRoutines();
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error al cargar rutinas');
+            }
+        }
+
+        async function loadRoutines() {
+            // Mostrar info de la semana
+            const monday = getMonday();
+            const friday = new Date(monday);
+            friday.setDate(friday.getDate() + 4);
+            
+            document.getElementById('weekInfo').textContent = 
+                `Semana del ${monday.getDate()}/${monday.getMonth()+1} al ${friday.getDate()}/${friday.getMonth()+1}`;
+
+            // Verificar si hay rutina
+            const hasRoutine = await hasRoutineThisWeek(idUsuario);
+
+            if (!hasRoutine) {
+                showNoRoutine();
+                return;
+            }
+
+            // Mostrar selector de días y rutina
+            renderDaysSelector();
+            await renderDayRoutine(currentDay);
+        }
+
+        function showNoRoutine() {
+            const content = document.getElementById('routineContent');
+            content.innerHTML = `
+                <div class="exercises-section">
+                    <div class="no-routine">
+                        <div class="no-routine-icon">😔</div>
+                        <h2>No tienes rutinas generadas</h2>
+                        <p>Primero debes seleccionar tu equipamiento disponible</p>
+                        <button class="btn btn-generate" onclick="window.location.href='equipment.html'">
+                            🏋️ Ir a Equipamiento
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDaysSelector() {
+            const days = [
+                { num: 1, name: 'LUN', label: 'Lunes' },
+                { num: 2, name: 'MAR', label: 'Martes' },
+                { num: 3, name: 'MIÉ', label: 'Miércoles' },
+                { num: 4, name: 'JUE', label: 'Jueves' },
+                { num: 5, name: 'VIE', label: 'Viernes' }
+            ];
+
+            const daysHTML = days.map(day => `
+                <div class="day-btn ${day.num === currentDay ? 'active' : ''}" data-day="${day.num}">
+                    <div class="day-name">${day.name}</div>
+                    <div class="day-label">${day.label}</div>
+                </div>
+            `).join('');
+
+            const content = document.getElementById('routineContent');
+            content.innerHTML = `
+                <div class="days-selector">
+                    <div class="days-grid">
+                        ${daysHTML}
+                    </div>
+                </div>
+                <div class="exercises-section">
+                    <div class="section-title">
+                        <span>💪</span>
+                        <span id="dayTitle">Ejercicios del Día</span>
+                    </div>
+                    <div id="exercisesList">
+                        <div class="loading">⏳ Cargando ejercicios...</div>
+                    </div>
+                </div>
+            `;
+
+            // Event listeners para días
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    currentDay = parseInt(btn.dataset.day);
+                    
+                    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    await renderDayRoutine(currentDay);
+                });
+            });
+        }
+
+        async function renderDayRoutine(day) {
+            const exercisesList = document.getElementById('exercisesList');
+            const dayTitle = document.getElementById('dayTitle');
+            
+            const dayNames = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+            dayTitle.textContent = `Ejercicios del ${dayNames[day]}`;
+            
+            exercisesList.innerHTML = '<div class="loading">⏳ Cargando...</div>';
+
+            try {
+                const rutinas = await getDayRoutineWithDetails(idUsuario, day);
+                
+                if (rutinas.length === 0) {
+                    exercisesList.innerHTML = '<p style="text-align:center;color:#666;">No hay ejercicios para este día</p>';
+                    return;
+                }
+
+                const exercisesHTML = rutinas.map((rutina, index) => `
+                    <div class="exercise-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="exercise-header">
+                            <div class="exercise-number">${rutina.posicion}</div>
+                            <div class="exercise-info">
+                                <div class="exercise-name">${rutina.nombre_ejercicio}</div>
+                                <div class="exercise-machine">🏋️ ${rutina.nombre_maquina}</div>
+                            </div>
+                        </div>
+                        <div class="exercise-description">
+                            ${rutina.descripcion || 'Realiza el ejercicio con buena técnica'}
+                        </div>
+                        <div class="exercise-stats">
+                            <div class="stat-badge">📊 ${rutina.series || 3} series</div>
+                            <div class="stat-badge">🔢 ${rutina.repeticiones || 12} reps</div>
+                            <div class="stat-badge">⏱️ ${rutina.descanso || 60}seg descanso</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                exercisesList.innerHTML = exercisesHTML;
+
+            } catch (error) {
+                console.error('Error al cargar rutina:', error);
+                exercisesList.innerHTML = '<p style="text-align:center;color:#ff4757;">Error al cargar ejercicios</p>';
+            }
+        }
+
+        // Regenerar rutina
+        document.getElementById('regenerateBtn').addEventListener('click', async () => {
+            if (!confirm('¿Quieres generar una nueva rutina? La actual se perderá.')) {
+                return;
+            }
+
+            const btn = document.getElementById('regenerateBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Generando...';
+
+            try {
+                const result = await generateWeeklyRoutine(idUsuario);
+                
+                if (result.success) {
+                    alert('✅ Nueva rutina generada exitosamente');
+                    location.reload();
+                } else {
+                    alert('❌ Error: ' + result.error);
+                    btn.disabled = false;
+                    btn.innerHTML = '🔄 Regenerar';
+                }
+            } catch (error) {
+                alert('❌ Error al regenerar rutina');
+                btn.disabled = false;
+                btn.innerHTML = '🔄 Regenerar';
+            }
+        });
+
+        function showError(msg) {
+            alert(msg);
+        }
+
+        init();
+    </script>
+</body>
+</html>
